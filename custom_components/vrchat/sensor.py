@@ -1,7 +1,7 @@
 """Sensor platform for VRChat Friends."""
 from __future__ import annotations
 import logging
-from typing import Any # <-- THIS IS THE FIX
+from typing import Any
 from datetime import timedelta
 
 import async_timeout
@@ -63,20 +63,28 @@ class VRChatDataUpdateCoordinator(DataUpdateCoordinator):
                         response.raise_for_status()
                         data = await response.json()
                         
-                        # Process and filter friends in a single pass
                         processed_friends = []
                         for friend in data:
-                            # Only include friends who are actually in-game
-                            if friend.get("platform") == "standalonewindows":
-                                # Add our smart display_pic attribute
-                                friend["display_pic"] = (
-                                    friend.get("profilePicOverride") or 
-                                    friend.get("currentAvatarThumbnailImageUrl") or 
-                                    friend.get("userIcon") or 
-                                    "" # Ensure it's never None
-                                )
-                                # Add the complete friend data to our list
-                                processed_friends.append(friend)
+                            # Exclude users on the website to include PC, Quest, Android etc.
+                            if friend.get("platform") != "web":
+                                # Create a new, cleaner dictionary for the friend's data
+                                clean_friend_data = {
+                                    "displayName": friend.get("displayName"),
+                                    "id": friend.get("id"),
+                                    "status": friend.get("status"),
+                                    "statusDescription": friend.get("statusDescription"),
+                                    "location": friend.get("location"),
+                                    "platform": friend.get("platform"),
+                                    "tags": friend.get("tags"),
+                                    # Add our smart display_pic attribute
+                                    "display_pic": (
+                                        friend.get("profilePicOverride") or 
+                                        friend.get("currentAvatarThumbnailImageUrl") or 
+                                        friend.get("userIcon") or 
+                                        ""
+                                    )
+                                }
+                                processed_friends.append(clean_friend_data)
                         return processed_friends
 
         except aiohttp.ClientError as err:
