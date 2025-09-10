@@ -5,9 +5,8 @@
   "documentation": "https://github.com/SketchCoyote/ha-vrchat-friends",
   "issue_tracker": "https://github.com/SketchCoyote/ha-vrchat-friends/issues",
   "codeowners": ["@SketchCoyote"],
-  "version": "1.0.9",
+  "version": "1.1.0",
   "iot_class": "cloud_polling",
-  "requirements": ["aiohttp"],
-  "brand": "VRChat Friends"
+  "requirements": ["aiohttp"]
 }
 
