@@ -1,12 +1,13 @@
 {
   "domain": "vrchat",
-  "name": "VRChat Online Friends",
+  "name": "VRChat Friends",
   "config_flow": true,
   "documentation": "https://github.com/SketchCoyote/ha-vrchat-friends",
   "issue_tracker": "https://github.com/SketchCoyote/ha-vrchat-friends/issues",
   "codeowners": ["@SketchCoyote"],
-  "version": "1.0.7",
+  "version": "1.0.8",
   "iot_class": "cloud_polling",
   "requirements": ["aiohttp"],
+  "brand_name": "VRChat"
 }
 
