@@ -2,17 +2,18 @@
   "config": {
     "step": {
       "user": {
-        "title": "VRChat Friends",
-        "description": "Please enter your VRChat authentication cookie. You can find this using your browser's developer tools while logged into the VRChat website.",
+        "title": "VRChat Friends Setup",
+        "description": "Instructions: 1. Log in to vrchat.com in your browser. 2. Open Developer Tools (F12). 3. Go to the Application (Chrome) or Storage (Firefox) tab. 4. Under Cookies, find the 'auth' cookie and copy its entire value.",
         "data": {
           "auth_cookie": "Authentication Cookie"
         }
       }
     },
     "error": {
-      "cannot_connect": "Unable to connect to the VRChat API. Please check your network connection.",
-      "invalid_auth": "The provided authentication cookie is invalid or has expired.",
-      "unknown": "An unknown error occurred. Please check the logs for more information."
+      "cannot_connect": "Failed to connect to the VRChat API. Please check your network connection.",
+      "invalid_auth": "The authentication cookie is invalid or has expired. Please provide a valid cookie.",
+      "unknown": "An unknown error occurred. Please check the logs."
     }
   }
 }
+
