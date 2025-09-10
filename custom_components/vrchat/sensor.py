@@ -66,15 +66,19 @@ class VRChatDataUpdateCoordinator(DataUpdateCoordinator):
                         # Process and filter friends in a single pass
                         processed_friends = []
                         for friend in data:
-                            if friend.get("platform") != "web":
+                            # Only include friends who are actually in-game
+                            if friend.get("platform") == "standalonewindows":
+                                # Add our smart display_pic attribute
                                 friend["display_pic"] = (
                                     friend.get("profilePicOverride") or 
                                     friend.get("currentAvatarThumbnailImageUrl") or 
                                     friend.get("userIcon") or 
                                     "" # Ensure it's never None
                                 )
+                                # Add the complete friend data to our list
                                 processed_friends.append(friend)
                         return processed_friends
+
         except aiohttp.ClientError as err:
             raise UpdateFailed(f"Error communicating with VRChat API: {err}") from err
         except Exception as err:
