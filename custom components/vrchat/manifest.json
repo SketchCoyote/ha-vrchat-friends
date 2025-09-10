@@ -1,0 +1,13 @@
+{
+  "domain": "vrchat",
+  "name": "VRChat Friends",
+  "config_flow": true,
+  "documentation": "https://github.com/your_github_username/ha-vrchat-friends",
+  "issue_tracker": "https://github.com/your_github_username/ha-vrchat-friends/issues",
+  "codeowners": [
+    "@sketchcoyote"
+  ],
+  "version": "1.0.0",
+  "iot_class": "cloud_polling",
+  "requirements": []
+}
