@@ -1,5 +1,7 @@
 """Sensor platform for VRChat Friends."""
+from __future__ import annotations
 import logging
+from typing import Any # <-- THIS IS THE FIX
 from datetime import timedelta
 
 import async_timeout
@@ -8,7 +10,6 @@ import aiohttp
 from homeassistant.components.sensor import SensorEntity, SensorStateClass
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
-from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import (
     CoordinatorEntity,
@@ -28,7 +29,9 @@ async def async_setup_entry(
     async_add_entities: AddEntitiesCallback,
 ) -> None:
     """Set up the sensor platform."""
-    coordinator = VRChatDataUpdateCoordinator(hass, entry)
+    auth_cookie = entry.data["auth_cookie"]
+    
+    coordinator = VRChatDataUpdateCoordinator(hass, auth_cookie)
     await coordinator.async_config_entry_first_refresh()
 
     async_add_entities([VRChatFriendsSensor(coordinator, entry)])
@@ -37,39 +40,41 @@ async def async_setup_entry(
 class VRChatDataUpdateCoordinator(DataUpdateCoordinator):
     """A coordinator to fetch data from the VRChat API."""
 
-    def __init__(self, hass: HomeAssistant, entry: ConfigEntry) -> None:
+    def __init__(self, hass: HomeAssistant, auth_cookie: str) -> None:
         """Initialize the coordinator."""
-        self.auth_cookie = entry.data["auth_cookie"]
         super().__init__(
             hass,
             _LOGGER,
             name=DOMAIN,
             update_interval=SCAN_INTERVAL,
         )
+        self.auth_cookie = auth_cookie
 
     async def _async_update_data(self) -> list:
         """Fetch data from the VRChat API."""
-        headers = {"User-Agent": USER_AGENT, "Cookie": self.auth_cookie}
-        session = async_get_clientsession(self.hass)
-
+        headers = {
+            "User-Agent": USER_AGENT,
+            "Cookie": self.auth_cookie
+        }
         try:
             async with async_timeout.timeout(15):
-                async with session.get(VRCHAT_API_URL, headers=headers) as response:
-                    response.raise_for_status()
-                    data = await response.json()
-
-                    processed_friends = []
-                    for friend in data:
-                        if friend.get("platform") != "web":
-                            # Prioritize banner > avatar > icon
-                            friend["display_pic"] = (
-                                friend.get("profilePicOverride")
-                                or friend.get("currentAvatarThumbnailImageUrl")
-                                or friend.get("userIcon")
-                                or ""
-                            )
-                            processed_friends.append(friend)
-                    return processed_friends
+                async with aiohttp.ClientSession() as session:
+                    async with session.get(VRCHAT_API_URL, headers=headers) as response:
+                        response.raise_for_status()
+                        data = await response.json()
+                        
+                        # Process and filter friends in a single pass
+                        processed_friends = []
+                        for friend in data:
+                            if friend.get("platform") != "web":
+                                friend["display_pic"] = (
+                                    friend.get("profilePicOverride") or 
+                                    friend.get("currentAvatarThumbnailImageUrl") or 
+                                    friend.get("userIcon") or 
+                                    "" # Ensure it's never None
+                                )
+                                processed_friends.append(friend)
+                        return processed_friends
         except aiohttp.ClientError as err:
             raise UpdateFailed(f"Error communicating with VRChat API: {err}") from err
         except Exception as err:
@@ -82,9 +87,7 @@ class VRChatFriendsSensor(CoordinatorEntity, SensorEntity):
 
     _attr_has_entity_name = True
 
-    def __init__(
-        self, coordinator: VRChatDataUpdateCoordinator, entry: ConfigEntry
-    ) -> None:
+    def __init__(self, coordinator: VRChatDataUpdateCoordinator, entry: ConfigEntry) -> None:
         """Initialize the sensor."""
         super().__init__(coordinator)
         self._attr_name = "Online Friends"
@@ -95,7 +98,7 @@ class VRChatFriendsSensor(CoordinatorEntity, SensorEntity):
         self._attr_device_info = {
             "identifiers": {(DOMAIN, entry.entry_id)},
             "name": "VRChat",
-            "manufacturer": "VRChat Inc.",
+            "manufacturer": "VRChat",
             "entry_type": "service",
         }
 
@@ -108,3 +111,4 @@ class VRChatFriendsSensor(CoordinatorEntity, SensorEntity):
     def extra_state_attributes(self) -> dict[str, Any]:
         """Return the state attributes."""
         return {"online_list": self.coordinator.data}
+
