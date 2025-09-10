@@ -75,7 +75,7 @@ You can use the online\_list attribute to create powerful automations, such as s
 
 You can create a beautiful dashboard card to display your online friends. This example requires the [HTML Jinja2 Template Card](https://github.com/PiotrMachowski/Home-Assistant-Lovelace-HTML-Jinja2-Template-card) from HACS.
 
-type: custom:html-jinja2-template-card  
+type: custom:html-template-card  
 title: VRChat Friends In-World  
 content: |  
   {% set friends \= state\_attr('sensor.vrchat\_friends\_in\_world', 'online\_list') %}  
