@@ -24,6 +24,8 @@ You must have [HACS (Home Assistant Community Store)](https://hacs.xyz/) install
 
 ### **Installation via HACS (Recommended)**
 
+[![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=https%3A%2F%2Fgithub.com%2FSketchCoyote%2F&repository=ha-vrchat-friends.git&category=integration)
+
 1. Go to **HACS** in your Home Assistant.  
 2. Click on **Integrations**.  
 3. Click the three-dots menu in the top-right corner and select **"Custom repositories"**.  
@@ -33,7 +35,7 @@ You must have [HACS (Home Assistant Community Store)](https://hacs.xyz/) install
 
 ### **Manual Installation**
 
-1. Download the latest release from the [Releases](https://www.google.com/search?q=https://github.com/your_github_username/ha-vrchat-friends/releases) page on GitHub.  
+1. Download the latest release from the [Releases](https://github.com/SketchCoyote/ha-vrchat-friends/releases) page on GitHub.  
 2. Unzip the downloaded file.  
 3. Copy the vrchat folder (from within the custom\_components folder) into your Home Assistant's custom\_components directory.  
 4. Restart Home Assistant.
@@ -53,10 +55,10 @@ The authentication cookie is required for the integration to securely access you
 
 1. Log in to the [VRChat Website](https://vrchat.com/) in a web browser (like Chrome or Firefox).  
 2. Open your browser's **Developer Tools**. You can usually do this by pressing **F12** or right-clicking the page and selecting "Inspect".  
-3. Go to the **Application** tab (in Chrome) or **Storage** tab (in Firefox).  
-4. On the left side, under "Storage", expand the "Cookies" section and select https://vrchat.com.  
-5. Find the cookie named **auth**.  
-6. Copy the **entire value** from the "Cookie Value" column. It's a very long string of text.  
+3. Go to the **Network** tab.
+4. In the Filter, search **auth** and select **user**. If you do not see it, refresh the page.
+5. Find the **Cookie** section under **Headers** then **Request Headers**. 
+6. Copy the value starting with **auth=authcookie**. If you have two factor enabled, ensure that part is copied as well. It should end in ";". It's a very long string of text.  
 7. Paste this entire string into the configuration prompt in Home Assistant.
 
 ## **Usage**
@@ -75,6 +77,7 @@ You can use the online\_list attribute to create powerful automations, such as s
 
 You can create a beautiful dashboard card to display your online friends. This example requires the [HTML Jinja2 Template Card](https://github.com/PiotrMachowski/Home-Assistant-Lovelace-HTML-Jinja2-Template-card) from HACS.
 
+```
 type: custom:html-template-card  
 title: VRChat Friends In-World  
 content: |  
@@ -86,11 +89,8 @@ content: |
   {% else %}  
     No friends are currently in-world.  
   {% endif %}
+```
 
 ## **Contributions**
 
-Contributions are welcome\! If you have suggestions or find a bug, please [open an issue](https://www.google.com/search?q=https://github.com/your_github_username/ha-vrchat-friends/issues).
-
-## **License**
-
-This project is licensed under the MIT License. See the LICENSE file for details.
+Contributions are welcome\! If you have suggestions or find a bug, please [open an issue](https://github.com/SketchCoyote/ha-vrchat-friends/issues).
