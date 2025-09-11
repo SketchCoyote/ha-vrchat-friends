@@ -24,6 +24,8 @@ You must have [HACS (Home Assistant Community Store)](https://hacs.xyz/) install
 
 ### **Installation via HACS (Recommended)**
 
+[![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=SketchCoyote&repository=https%3A%2F%2Fgithub.com%2FSketchCoyote%2Fha-vrchat-friends.git&category=Integration)
+
 1. Go to **HACS** in your Home Assistant.  
 2. Click on **Integrations**.  
 3. Click the three-dots menu in the top-right corner and select **"Custom repositories"**.  
